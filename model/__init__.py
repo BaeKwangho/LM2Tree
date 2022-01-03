@@ -1,10 +1,14 @@
 from model.encoder import *
 from model.decoder import *
+from model.model_utils import *
+
+import torch
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 class LM2Tree(nn.Module):
-    def __init__(self,enc_conf,dec_conf):
+    def __init__(self,enc_conf,dec_conf,token_len):
         super(LM2Tree,self).__init__()
-        self.encoder = ElectraEnc(enc_conf)
+        self.encoder = ElectraEnc(enc_conf,token_len)
         self.decoder = TreeDecoder(dec_conf)
         self.dec_conf = dec_conf
         
@@ -93,7 +97,7 @@ class LM2Tree(nn.Module):
         
         return result , losses
 
-def get_model(model_type,enc_conf,dec_conf):
-    model = LM2Tree(enc_conf,dec_conf)
+def get_model(model_type,enc_conf,dec_conf,token_len):
+    model = LM2Tree(enc_conf,dec_conf,token_len)
     
     return model

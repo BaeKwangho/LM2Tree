@@ -2,10 +2,11 @@ import torch.nn as nn
 from transformers import ElectraModel
 
 class ElectraEnc(nn.Module):
-    def __init__(self,config):
+    def __init__(self,config,token_len):
         super(ElectraEnc,self).__init__()
         #self.electra = ElectraModel(config)
         self.electra = ElectraModel.from_pretrained("monologg/koelectra-base-v3-discriminator")
+        self.electra.resize_token_embeddings(token_len)
         self.pooler = nn.Linear(config.hidden_size,config.hidden_size)
         self.activation = nn.Tanh()
         
