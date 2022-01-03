@@ -5,7 +5,7 @@ import os
 
 import os
 import argparse
-from model import get_model
+from model import *
 from processing import *
 from transformers import ElectraModel, ElectraConfig,ElectraTokenizer
 
@@ -59,12 +59,24 @@ def train():
             tokenizer.add_tokens('㎥')
             tokenizer.save_pretrained('./temp_tokenizer')
             tokenizer = ElectraTokenizer.from_pretrained('./temp_tokenizer')
-        
-        enc_conf = ElectraConfig.from_pretrained(args.tokenizer_path)
-        
-            
-    output_lang, train_pairs, test_pairs = prepare_data(pairs_trained, [], 5, tokenizer, generate_nums,copy_nums, tree=True,use_tfm=True)       
-        
+       
+    temp_pairs = []
+    for p in old_pairs:
+        ept = ExpressionTree()
+        ept.build_tree_from_infix_expression(p[1])
+        #print('exp: ',ept.get_prefix_expression())
+        if len(p) == 5:
+            temp_pairs.append((p[0], ept.get_prefix_expression(), p[2], p[3],p[4]))
+        else:
+            temp_pairs.append((p[0], ept.get_prefix_expression(), p[2], p[3], p[4],p[5]))
+    pairs = temp_pairs        
+    output_lang, train_pairs, test_pairs = prepare_data(pairs, [], 5, tokenizer, generate_nums,copy_nums, tree=True,use_tfm=True)
+    
+    enc_conf = ElectraConfig.from_pretrained(args.tokenizer_path)
+    dec_conf = TreeConfig(output_lang.n_words,generate_nums,copy_nums,var_nums=output_lang.index2var)
+    
+    
+    model = get_model(args.model_type,enc_conf,dec_conf)
     
     
     

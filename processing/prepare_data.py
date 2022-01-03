@@ -141,7 +141,7 @@ def prepare_data(pairs_trained, pairs_tested, trim_min_count, tokenizer, generat
     if not use_tfm:
         input_lang.build_input_lang(trim_min_count)
     
-    
+    print('convert to tokenized question pairs')
     for pair in tqdm(pairs_trained):
         num_stack = []  # 用于记录不在输出词典的数字
         for word in pair[1]:

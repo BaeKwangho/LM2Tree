@@ -1,6 +1,7 @@
 import torch.nn as nn
+from transformers import ElectraModel
 
-class LMEncoder(nn.Module):
+class ElectraEnc(nn.Module):
     def __init__(self,config):
         super(ElectraEnc,self).__init__()
         #self.electra = ElectraModel(config)
